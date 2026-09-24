@@ -108,6 +108,12 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:#73818d;text-align:
   .cta{padding:32px 20px}
   .section-head h2,.cta h2{font-size:28px}
 }
+.news-modal{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:80;padding:20px;overflow:auto}
+.news-modal-box{max-width:760px;margin:5vh auto;background:#0b1823;border:1px solid var(--line);border-radius:18px;padding:24px;position:relative}
+.news-modal-close{position:absolute;right:14px;top:10px;width:38px;height:38px;border:0;border-radius:50%;background:#182a38;color:#fff;font-size:25px;cursor:pointer}
+.news-modal-box img{width:100%;max-height:430px;object-fit:cover;border-radius:13px;margin:12px 0}
+.news-modal-box h2{font-size:28px;line-height:1.3;margin:12px 0}
+.news-modal-box p{white-space:pre-wrap;color:#cbd6df}
 </style>
 
 <style>
@@ -161,7 +167,7 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:#73818d;text-align:
 }
 </style>
 
-</head>
+<style>#adminBtn{display:none!important}.footer-admin-btn{margin-top:18px;padding:9px 14px;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:9px;cursor:pointer;font-size:12px}.footer-admin-btn:hover{color:#fff;border-color:var(--green)}</style></head>
 <body>
 
 <nav>
@@ -173,7 +179,7 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:#73818d;text-align:
       <a href="#posts">পোস্ট</a>
       <a href="#contact">যোগাযোগ</a>
     </div>
-    <div style="display:flex;gap:8px;align-items:center"><button class="btn btn-dark" id="adminBtn" type="button">🔐 Admin</button><a class="btn btn-primary" href="#contact">যোগাযোগ</a></div>
+    <div style="display:flex;gap:8px;align-items:center"><button class="btn btn-dark" id="adminBtn" type="button" style="display:none!important">🔐 Admin</button><a class="btn btn-primary" href="#contact">যোগাযোগ</a></div>
   </div>
 </nav>
 
@@ -220,70 +226,123 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:#73818d;text-align:
 </section>
 
 
-<section id="posts">
+
+<section id="posts" class="news-portal">
   <div class="container">
-    <div class="section-head">
-      <h2>📱 AZAD TECH আপডেট</h2>
-      <p>Social Media, Tech ও গুরুত্বপূর্ণ নতুন আপডেট—পোস্ট আকারে দেখুন।</p>
+    <div class="news-heading">
+      <div>
+        <span class="news-kicker">AZAD TECH NEWS</span>
+        <h2>সর্বশেষ খবর ও আপডেট</h2>
+        <p>ইসলামি, প্রযুক্তি, সোশ্যাল মিডিয়া ও গুরুত্বপূর্ণ সাম্প্রতিক আপডেট।</p>
+      </div>
+      <a href="#adminPanel" class="news-admin-link" id="publicAdminLink">✍️ পোস্ট করুন</a>
     </div>
-    <div id="postsList" class="azad-feed"></div>
-    <div id="noPosts" class="card azad-empty" style="text-align:center;display:none">
-      এখনো কোনো পোস্ট প্রকাশ করা হয়নি।
+
+    <div class="news-ticker">
+      <span class="ticker-label">🔴 সর্বশেষ</span>
+      <div class="ticker-window"><div id="tickerText">Azad Tech-এ নতুন আপডেট প্রকাশিত হলে এখানে দেখা যাবে</div></div>
+    </div>
+
+    <div class="news-tools">
+      <div class="today-date" id="todayDate">📅 আজকের তারিখ</div>
+      <div class="news-search"><span>🔎</span><input id="newsSearch" type="search" placeholder="খবর খুঁজুন..."></div>
+    </div>
+
+    <div class="news-cats" id="newsCats">
+      <button class="news-cat active" data-cat="all">সব</button>
+      <button class="news-cat" data-cat="islamic">🕌 ইসলামি</button>
+      <button class="news-cat" data-cat="tech">💻 প্রযুক্তি</button>
+      <button class="news-cat" data-cat="social">📱 সোশ্যাল মিডিয়া</button>
+      <button class="news-cat" data-cat="general">📰 সাধারণ</button>
+    </div>
+
+    <div id="featuredNews"></div>
+    <div id="newsGrid" class="news-grid"></div>
+
+    <div id="noPosts" class="news-empty" style="display:none">
+      <div class="news-empty-icon">📰</div>
+      <h3>এখনো কোনো খবর প্রকাশিত হয়নি</h3>
+      <p>Admin থেকে প্রথম খবরটি প্রকাশ করুন।</p>
     </div>
   </div>
 </section>
 
-<div id="adminPanel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:100;overflow:auto;padding:25px 12px">
-  <div class="container" style="max-width:720px">
-    <div class="card" style="background:#0b1823">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
-        <h2>🔐 Admin Panel</h2>
-        <button class="btn btn-dark" id="closeAdmin" type="button">✕</button>
-      </div>
-      <p style="font-size:12px;color:var(--muted);margin-top:12px">
-  নোট: এই ফাইলের বর্তমান পোস্ট সিস্টেমটি ব্রাউজারে সংরক্ষণ করে। সবার ফোনে একই পোস্ট দেখাতে পরে একটি অনলাইন database/authentication (যেমন Supabase) সংযোগ করতে হবে।
-</p>
-      <div id="loginBox">
-        <p style="color:var(--muted);margin-bottom:12px">Admin PIN দিয়ে প্রবেশ করুন।</p>
-        <input id="adminPin" type="password" inputmode="numeric" placeholder="Admin PIN"
-          style="width:100%;padding:13px;border-radius:10px;border:1px solid var(--line);background:#07121c;color:#fff;margin-bottom:10px">
-        <button class="btn btn-primary" id="loginBtn" type="button">Login</button>
-        <p id="loginMsg" style="color:#ff9b9b;margin-top:10px"></p>
-      </div>
 
-      <div id="editorBox" style="display:none">
-        <label>পোস্টের ধরন</label>
-        <select id="postType" style="width:100%;padding:13px;border-radius:10px;border:1px solid var(--line);background:#07121c;color:#fff;margin:7px 0 12px">
-          <option value="update">📱 Social Media / Tech Update</option>
-          <option value="news">🔴 গুরুত্বপূর্ণ আপডেট</option>
-        </select>
-
-        <label>পোস্টের শিরোনাম</label>
-        <input id="postTitle" type="text" placeholder="যেমন: Facebook-এর নতুন আপডেট"
-          style="width:100%;padding:13px;border-radius:10px;border:1px solid var(--line);background:#07121c;color:#fff;margin:7px 0 12px">
-
-        <label>পোস্টের লেখা</label>
-        <textarea id="postText" rows="7" placeholder="আপনার আপডেট লিখুন..."
-          style="width:100%;padding:13px;border-radius:10px;border:1px solid var(--line);background:#07121c;color:#fff;margin:7px 0 12px"></textarea>
-
-        <label>ছবি (ঐচ্ছিক)</label>
-        <input id="postImage" type="file" accept="image/*"
-          style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#07121c;color:#fff;margin:7px 0 16px">
-
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn btn-primary" id="publishBtn" type="button">📢 পোস্ট করুন</button>
-          <button class="btn btn-dark" id="logoutBtn" type="button">Logout</button>
-        </div>
-        <p id="publishMsg" style="color:#8dddb0;margin-top:12px"></p>
-
-        <div style="margin-top:25px">
-          <h3 style="margin-bottom:10px">আপনার পোস্ট</h3>
-          <div id="adminPosts"></div>
-        </div>
-      </div>
-    </div>
+<div id="newsModal" class="news-modal" style="display:none">
+  <div class="news-modal-box">
+    <button id="closeNewsModal" class="news-modal-close" type="button">×</button>
+    <div id="newsModalContent"></div>
   </div>
 </div>
+
+<div id="adminPanel" class="az-admin-overlay" style="display:none">
+  <div class="az-admin-modal">
+    <div class="az-admin-top">
+      <div class="az-admin-brand">
+        <div class="az-admin-logo">AT</div>
+        <div><strong>AZAD TECH</strong><span>Creator Studio</span></div>
+      </div>
+      <button class="az-close" id="closeAdmin" type="button" aria-label="Close">×</button>
+    </div>
+
+    <div id="loginBox" class="az-login-box">
+      <div class="az-login-icon">🔐</div>
+      <h2>Admin Login</h2>
+      <p>শুধু আপনার জন্য পোস্ট ম্যানেজমেন্ট</p>
+      <label for="adminPin">Admin PIN</label>
+      <div class="az-pin-wrap">
+        <input id="adminPin" type="password" inputmode="text" autocomplete="current-password" placeholder="Admin password লিখুন" maxlength="32">
+      </div>
+      <button class="az-main-btn" id="loginBtn" type="button">🔓 Admin Panel-এ প্রবেশ</button>
+      <p id="loginMsg" class="az-error"></p>
+    </div>
+
+    <div id="editorBox" class="az-editor" style="display:none">
+      <div class="az-welcome">
+        <div><span>স্বাগতম 👋</span><strong>আজ কী পোস্ট করবেন?</strong></div>
+        <button class="az-logout" id="logoutBtn" type="button">Logout</button>
+      </div>
+
+      
+      <div class="az-type-tabs">
+        <button type="button" class="az-type active" data-type="islamic">🕌 ইসলামি</button>
+        <button type="button" class="az-type" data-type="tech">💻 প্রযুক্তি</button>
+        <button type="button" class="az-type" data-type="social">📱 সোশ্যাল মিডিয়া</button>
+        <button type="button" class="az-type" data-type="general">📰 সাধারণ</button>
+        <select id="postType" aria-label="News category" style="display:none">
+          <option value="islamic">islamic</option>
+          <option value="tech">tech</option>
+          <option value="social">social</option>
+          <option value="general">general</option>
+        </select>
+      </div>
+
+      <div class="az-field">
+        <label for="postTitle">শিরোনাম</label>
+        <input id="postTitle" type="text" placeholder="যেমন: Facebook-এর নতুন আপডেট">
+      </div>
+      <div class="az-field">
+        <label for="postText">আপনার লেখা</label>
+        <textarea id="postText" rows="6" placeholder="আপনার আপডেট এখানে লিখুন..."></textarea>
+      </div>
+      <div class="az-field">
+        <label>ছবি যোগ করুন <small>(ঐচ্ছিক)</small></label>
+        <label class="az-upload">
+          <span class="az-upload-icon">🖼️</span>
+          <span><strong>ছবি নির্বাচন করুন</strong><small> JPG, PNG বা WEBP</small></span>
+          <input id="postImage" type="file" accept="image/*">
+        </label>
+        <div id="imageName" class="az-image-name"></div>
+      </div>
+
+      <button class="az-main-btn az-publish" id="publishBtn" type="button">📢 পোস্ট প্রকাশ করুন</button>
+      <p id="publishMsg" class="az-success"></p>
+
+      <div class="az-my-posts">
+        <div class="az-subhead"><h3>আপনার পোস্ট</h3><span>ম্যানেজ করুন</span></div>
+        <div id="adminPosts"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -320,227 +379,260 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:#73818d;text-align:
   © 2026 AZAD TECH. All rights reserved.
 </footer>
 
+
 <style>
-  .azad-feed{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
-  .azad-post{
-    background:var(--card);border:1px solid var(--line);border-radius:18px;
-    padding:16px;box-shadow:0 12px 35px rgba(0,0,0,.18);
-    animation:azadIn .55s ease both;
-  }
-  @keyframes azadIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
-  .azad-post-head{display:flex;align-items:center;gap:11px}
-  .azad-avatar{
-    width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
-    background:linear-gradient(135deg,var(--green),#0d6f3a);font-weight:900;color:#fff
-  }
-  .azad-post-name{font-weight:800}
-  .azad-post-time{font-size:12px;color:var(--muted)}
-  .azad-badge{margin-left:auto;font-size:11px;padding:5px 9px;border-radius:999px;background:#123324;color:#7ff0ad}
-  .azad-badge.news{background:#3a1418;color:#ff9da6}
-  .azad-post-title{font-size:21px;margin:14px 0 7px}
-  .azad-post-text{white-space:pre-wrap;color:#d8e1e8}
-  .azad-post-image{width:100%;max-height:520px;object-fit:cover;border-radius:14px;margin-top:14px;display:block}
-  .azad-post-date{font-size:12px;color:var(--muted);margin-top:13px}
-  .azad-actions{display:flex;gap:8px;border-top:1px solid var(--line);margin-top:14px;padding-top:10px}
-  .azad-action{
-    flex:1;border:0;background:transparent;color:#cbd6df;padding:9px;border-radius:10px;cursor:pointer
-  }
-  .azad-action:hover{background:#10212e}
-  .azad-empty{max-width:760px;margin:0 auto}
-  .admin-post-row{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px;background:#091722}
-  @media(max-width:800px){
-    #posts .grid{grid-template-columns:1fr!important}
-    .azad-post-title{font-size:19px}
-  }
+.az-admin-overlay{position:fixed;inset:0;background:rgba(2,8,13,.82);backdrop-filter:blur(8px);z-index:1000;overflow:auto;padding:22px 14px;display:flex;align-items:center;justify-content:center}
+.az-admin-modal{width:min(100%,560px);background:linear-gradient(180deg,#0d1a24,#08131c);border:1px solid rgba(255,255,255,.10);border-radius:24px;box-shadow:0 30px 90px rgba(0,0,0,.55);overflow:hidden;color:#eef5f8}
+.az-admin-top{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.025)}
+.az-admin-brand{display:flex;align-items:center;gap:12px}.az-admin-brand strong{display:block;font-size:16px}.az-admin-brand span{display:block;color:#8495a2;font-size:11px;margin-top:2px}.az-admin-logo{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#19d66b,#08783b);font-weight:900;color:#fff;box-shadow:0 8px 25px rgba(25,214,107,.22)}
+.az-close{width:38px;height:38px;border:0;border-radius:12px;background:#14232e;color:#b9c5cc;font-size:25px;cursor:pointer}.az-close:hover{background:#1b303e;color:#fff}
+.az-login-box{text-align:center;padding:36px 28px 42px}.az-login-icon{width:66px;height:66px;border-radius:20px;background:#102c21;display:grid;place-items:center;font-size:30px;margin:0 auto 15px}.az-login-box h2{margin:0 0 6px;font-size:25px}.az-login-box>p{margin:0 0 25px;color:#83939e;font-size:13px}.az-login-box label{display:block;text-align:left;font-size:13px;color:#aab7bf;margin-bottom:7px}.az-pin-wrap input{width:100%;box-sizing:border-box;padding:15px 16px;border:1px solid #263946;border-radius:13px;background:#07111a;color:#fff;outline:none;font-size:18px;letter-spacing:5px;text-align:center}.az-pin-wrap input:focus,.az-field input:focus,.az-field textarea:focus{border-color:#1edc70;box-shadow:0 0 0 3px rgba(30,220,112,.09)}
+.az-main-btn{width:100%;border:0;border-radius:13px;padding:14px 18px;margin-top:14px;background:linear-gradient(135deg,#18d56b,#0aa451);color:#fff;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 10px 24px rgba(18,199,93,.18)}.az-main-btn:active{transform:translateY(1px)}.az-error{min-height:18px;color:#ff9292!important;margin:10px 0 0!important;font-size:12px!important}.az-success{min-height:18px;color:#6ff0a7!important;text-align:center;font-size:13px}
+.az-editor{padding:20px}.az-welcome{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.az-welcome span{display:block;color:#7f919d;font-size:12px}.az-welcome strong{display:block;font-size:20px;margin-top:3px}.az-logout{border:1px solid #263946;background:#101f29;color:#bdc8ce;border-radius:10px;padding:9px 12px;cursor:pointer}.az-type-tabs{display:flex;gap:8px;margin-bottom:18px}.az-type{flex:1;border:1px solid #263946;background:#0b1822;color:#aebbc3;border-radius:12px;padding:11px 8px;cursor:pointer;font-size:12px}.az-type.active{background:#103a27;border-color:#1fca68;color:#8df5b6;font-weight:700}.az-field{margin:14px 0}.az-field label{display:block;font-size:13px;color:#b7c3ca;margin-bottom:7px}.az-field label small{color:#748691}.az-field input[type=text],.az-field textarea{width:100%;box-sizing:border-box;border:1px solid #263946;border-radius:13px;background:#07111a;color:#f4f7f8;padding:13px 14px;font:inherit;outline:none}.az-field textarea{resize:vertical;min-height:130px}.az-upload{display:flex!important;align-items:center;gap:12px;padding:14px;border:1px dashed #38505e;border-radius:13px;background:#091721;cursor:pointer}.az-upload-icon{font-size:24px}.az-upload strong{display:block;color:#dce5e9}.az-upload small{display:block;color:#71838e;margin-top:3px}.az-upload input{display:none}.az-image-name{font-size:11px;color:#78e9a5;margin-top:7px}.az-publish{margin-top:4px}.az-my-posts{margin-top:25px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08)}.az-subhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}.az-subhead h3{margin:0;font-size:16px}.az-subhead span{font-size:11px;color:#738590}.admin-post-row{border:1px solid #1d303b!important;border-radius:13px!important;padding:12px!important;margin-top:9px!important;background:#091720!important}.admin-post-row strong{font-size:13px}.admin-post-row small{color:#748691;font-size:10px}.admin-post-row .btn{border:1px solid #493034!important;background:#211518!important;color:#ffadb2!important;border-radius:8px!important;padding:7px 10px!important}
+@media(max-width:520px){.az-admin-overlay{padding:10px}.az-admin-modal{border-radius:20px}.az-editor{padding:16px}.az-login-box{padding:30px 18px 34px}.az-welcome strong{font-size:18px}.az-type{font-size:11px}}
+</style>
+
+<style>
+.news-portal{padding:72px 0 35px}
+.news-heading{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:22px}
+.news-kicker{font-size:12px;font-weight:900;letter-spacing:2px;color:var(--green)}
+.news-heading h2{font-size:clamp(28px,4vw,42px);line-height:1.15;margin:6px 0 8px}
+.news-heading p{color:var(--muted)}
+.news-admin-link{background:var(--green);color:#061019;padding:11px 16px;border-radius:10px;font-weight:800;white-space:nowrap}
+.news-ticker{display:flex;align-items:center;background:#0a151e;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:20px}
+.ticker-label{background:#d92b38;color:white;font-weight:900;padding:12px 15px;white-space:nowrap}
+.ticker-window{overflow:hidden;white-space:nowrap;flex:1}
+#tickerText{display:inline-block;padding-left:100%;animation:newsTicker 18s linear infinite}
+@keyframes newsTicker{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+.news-tools{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 16px}
+.today-date{color:#b9c7d1;font-size:13px}
+.news-search{display:flex;align-items:center;gap:7px;border:1px solid var(--line);background:#09141d;border-radius:10px;padding:8px 11px;min-width:260px}
+.news-search input{border:0;outline:0;background:transparent;color:#fff;width:100%;font-size:14px}
+.news-read{display:inline-block;margin-top:13px;color:var(--green);font-weight:800;font-size:13px}
+@media(max-width:600px){.news-tools{align-items:stretch;flex-direction:column}.news-search{min-width:0;width:100%}}
+.news-cats{display:flex;gap:9px;overflow-x:auto;padding:2px 0 18px;scrollbar-width:none}
+.news-cat{border:1px solid var(--line);background:#0a151e;color:#cfd9e1;padding:9px 14px;border-radius:999px;white-space:nowrap;cursor:pointer}
+.news-cat.active,.news-cat:hover{background:var(--green);color:#061019;border-color:var(--green);font-weight:800}
+.news-feature{display:grid;grid-template-columns:1.35fr 1fr;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-bottom:24px;animation:newsIn .55s ease}
+.news-feature-media{min-height:320px;background:linear-gradient(135deg,#0d2635,#071019);position:relative}
+.news-feature-media img{width:100%;height:100%;object-fit:cover;display:block}
+.news-feature-placeholder{height:100%;display:grid;place-items:center;font-size:72px;opacity:.65}
+.news-feature-content{padding:28px;display:flex;flex-direction:column;justify-content:center}
+.news-label{display:inline-flex;align-self:flex-start;background:#173224;color:#75e7a0;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:800;margin-bottom:13px}
+.news-label.islamic{background:#17352a;color:#8cf0b3}.news-label.tech{background:#162c3a;color:#8dd9ff}.news-label.social{background:#26301a;color:#d7ef7e}.news-label.general{background:#30241a;color:#ffd38a}
+.news-feature h3{font-size:clamp(24px,3vw,34px);line-height:1.25;margin-bottom:12px}
+.news-feature p{color:#c5d0d9;white-space:pre-wrap}
+.news-meta{color:var(--muted);font-size:12px;margin-top:18px}
+.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.news-card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;animation:newsIn .55s ease both}
+.news-card:hover{transform:translateY(-3px);transition:.25s}
+.news-card-media{height:190px;background:#0b1823}
+.news-card-media img{width:100%;height:100%;object-fit:cover;display:block}
+.news-card-placeholder{height:100%;display:grid;place-items:center;font-size:46px;opacity:.55}
+.news-card-body{padding:17px}
+.news-card h3{font-size:20px;line-height:1.35;margin:8px 0}
+.news-card p{color:#aebbc5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap}
+.news-empty{padding:45px 20px;text-align:center;border:1px dashed var(--line);border-radius:16px;background:#09141d}
+.news-empty-icon{font-size:44px;margin-bottom:8px}
+.news-empty p{color:var(--muted)}
+@keyframes newsIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media(max-width:850px){.news-feature{grid-template-columns:1fr}.news-feature-media{min-height:230px}.news-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.news-portal{padding-top:45px}.news-heading{align-items:start;flex-direction:column}.news-admin-link{width:100%;text-align:center}.news-grid{grid-template-columns:1fr}.news-feature-content{padding:20px}.ticker-label{padding:10px 11px;font-size:12px}}
 </style>
 <script>
 (() => {
-  const KEY = "azadtech_posts_v2";
+  const KEY = "azadtech_posts_v3";
   const PIN_KEY = "azadtech_admin_pin_v1";
   const panel = document.getElementById("adminPanel");
   const loginBox = document.getElementById("loginBox");
   const editorBox = document.getElementById("editorBox");
-  const postsList = document.getElementById("postsList");
-  const noPosts = document.getElementById("noPosts");
+  if (!localStorage.getItem(PIN_KEY)) localStorage.setItem(PIN_KEY, "Azadattari2526");
 
-  if (!localStorage.getItem(PIN_KEY)) localStorage.setItem(PIN_KEY, "1234");
-
-  const getPosts = () => {
-    try { return JSON.parse(localStorage.getItem(KEY) || "[]"); }
-    catch { return []; }
+  const labels = {
+    islamic:["🕌 ইসলামি","islamic"],
+    tech:["💻 প্রযুক্তি","tech"],
+    social:["📱 সোশ্যাল মিডিয়া","social"],
+    general:["📰 সাধারণ","general"]
   };
-  const savePosts = (posts) => localStorage.setItem(KEY, JSON.stringify(posts));
+  const getPosts = () => { try{return JSON.parse(localStorage.getItem(KEY)||"[]")}catch{return[]} };
+  const savePosts = p => localStorage.setItem(KEY,JSON.stringify(p));
 
   function dateText(iso){
-    const d = new Date(iso);
-    const bn = new Intl.DateTimeFormat("bn-BD",{weekday:"long",year:"numeric",month:"long",day:"numeric"}).format(d);
-    const en = new Intl.DateTimeFormat("en-US",{weekday:"long",year:"numeric",month:"long",day:"numeric"}).format(d);
-    const ar = new Intl.DateTimeFormat("ar-SA",{weekday:"long",year:"numeric",month:"long",day:"numeric"}).format(d);
+    const d=new Date(iso);
+    const bn=new Intl.DateTimeFormat("bn-BD",{weekday:"long",year:"numeric",month:"long",day:"numeric"}).format(d);
+    const en=new Intl.DateTimeFormat("en-US",{year:"numeric",month:"long",day:"numeric"}).format(d);
+    const ar=new Intl.DateTimeFormat("ar-SA",{year:"numeric",month:"long",day:"numeric"}).format(d);
     return `🇧🇩 ${bn} • 🇬🇧 ${en} • 🇸🇦 ${ar}`;
   }
 
-  function renderPosts(){
-    const posts = getPosts().slice().reverse();
-    postsList.innerHTML = "";
-    noPosts.style.display = posts.length ? "none" : "block";
+  function renderNews(category="all"){
+    const posts=getPosts().slice().sort((a,b)=>new Date(b.date)-new Date(a.date));
+    const filtered0=category==="all"?posts:posts.filter(p=>p.type===category);
+    const filtered=searchTerm?filtered0.filter(p=>(p.title+" "+p.text).toLowerCase().includes(searchTerm)):filtered0;
+    const featured=document.getElementById("featuredNews");
+    const grid=document.getElementById("newsGrid");
+    const empty=document.getElementById("noPosts");
+    featured.innerHTML=""; grid.innerHTML="";
+    empty.style.display=filtered.length?"none":"block";
 
-    posts.forEach((p) => {
-      const card = document.createElement("article");
-      card.className = "azad-post";
-
-      const head = document.createElement("div");
-      head.className = "azad-post-head";
-      head.innerHTML = '<div class="azad-avatar">AT</div><div><div class="azad-post-name">AZAD TECH</div><div class="azad-post-time"></div></div>';
-      head.querySelector(".azad-post-time").textContent = dateText(p.date);
-
-      const badge = document.createElement("span");
-      badge.className = "azad-badge" + (p.type === "news" ? " news" : "");
-      badge.textContent = p.type === "news" ? "🔴 গুরুত্বপূর্ণ" : "📱 Update";
-      head.appendChild(badge);
-
-      const title = document.createElement("h3");
-      title.className = "azad-post-title";
-      title.textContent = p.title;
-
-      const body = document.createElement("p");
-      body.className = "azad-post-text";
-      body.textContent = p.text;
-
-      card.append(head, title, body);
-
-      if (p.image) {
-        const img = document.createElement("img");
-        img.className = "azad-post-image";
-        img.src = p.image;
-        img.alt = p.title || "AZAD TECH post image";
-        card.appendChild(img);
-      }
-
-      const d = document.createElement("div");
-      d.className = "azad-post-date";
-      d.textContent = "প্রকাশিত: " + new Date(p.date).toLocaleTimeString("bn-BD",{hour:"numeric",minute:"2-digit"});
-      card.appendChild(d);
-
-      const actions = document.createElement("div");
-      actions.className = "azad-actions";
-      actions.innerHTML = '<button class="azad-action" type="button">❤️ Like</button><button class="azad-action" type="button">💬 Comment</button><button class="azad-action" type="button">↗️ Share</button>';
-      card.appendChild(actions);
-
-      actions.children[0].onclick = () => {
-        actions.children[0].textContent = "❤️ Liked";
-      };
-      actions.children[2].onclick = async () => {
-        try {
-          await navigator.clipboard.writeText(location.href);
-          actions.children[2].textContent = "✅ Link copied";
-        } catch {
-          actions.children[2].textContent = "↗️ Share";
-        }
-      };
-
-      postsList.appendChild(card);
-    });
+    if(filtered.length){
+      const p=filtered[0];
+      featured.innerHTML=featureHTML(p);
+      filtered.slice(1).forEach(p=>grid.insertAdjacentHTML("beforeend",cardHTML(p)));
+      document.getElementById("tickerText").textContent =
+        "🔔 " + filtered.slice(0,5).map(x=>x.title).join("   •   ");
+    }else{
+      document.getElementById("tickerText").textContent="Azad Tech-এ নতুন খবর প্রকাশিত হলে এখানে দেখা যাবে";
+    }
     renderAdminPosts();
   }
 
-  function renderAdminPosts(){
-    const box = document.getElementById("adminPosts");
-    if (!box) return;
-    box.innerHTML = "";
-    getPosts().slice().reverse().forEach((p) => {
-      const row = document.createElement("div");
-      row.className = "admin-post-row";
-      const title = document.createElement("strong");
-      title.textContent = (p.type === "news" ? "🔴 " : "📱 ") + p.title;
-      const small = document.createElement("small");
-      small.textContent = dateText(p.date);
-      row.append(title, document.createElement("br"), small);
+  function featureHTML(p){
+    const [label,cls]=labels[p.type]||labels.general;
+    const media=p.image?`<img src="${p.image}" alt="">`:`<div class="news-feature-placeholder">📰</div>`;
+    return `<article class="news-feature">
+      <div class="news-feature-media">${media}</div>
+      <div class="news-feature-content">
+        <span class="news-label ${cls}">${label}</span>
+        <h3>${esc(p.title)}</h3>
+        <p>${esc(p.text)}</p>
+        <div class="news-meta">${dateText(p.date)}</div><button class="news-read" type="button" data-read-id="${p.id}">বিস্তারিত পড়ুন →</button>
+      </div>
+    </article>`;
+  }
 
-      const btn = document.createElement("button");
-      btn.className = "btn btn-dark";
-      btn.style.marginTop = "8px";
-      btn.textContent = "🗑️ Delete";
-      btn.onclick = () => {
-        if (!confirm("এই পোস্টটি ডিলেট করবেন?")) return;
-        savePosts(getPosts().filter(x => x.id !== p.id));
-        renderPosts();
-      };
-      row.appendChild(btn);
-      box.appendChild(row);
+  function cardHTML(p){
+    const [label,cls]=labels[p.type]||labels.general;
+    const media=p.image?`<img src="${p.image}" alt="">`:`<div class="news-card-placeholder">📰</div>`;
+    return `<article class="news-card">
+      <div class="news-card-media">${media}</div>
+      <div class="news-card-body">
+        <span class="news-label ${cls}">${label}</span>
+        <h3>${esc(p.title)}</h3>
+        <p>${esc(p.text)}</p>
+        <div class="news-meta">${dateText(p.date)}</div><button class="news-read" type="button" data-read-id="${p.id}">বিস্তারিত পড়ুন →</button>
+      </div>
+    </article>`;
+  }
+
+  function esc(s){
+    return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+  }
+
+  function renderAdminPosts(){
+    const box=document.getElementById("adminPosts"); if(!box)return;
+    box.innerHTML="";
+    getPosts().slice().sort((a,b)=>new Date(b.date)-new Date(a.date)).forEach(p=>{
+      const [label]=labels[p.type]||labels.general;
+      const row=document.createElement("div"); row.className="admin-post-row";
+      row.innerHTML=`<strong>${label} — ${esc(p.title)}</strong><br><small>${dateText(p.date)}</small>`;
+      const btn=document.createElement("button"); btn.className="btn btn-dark"; btn.style.marginTop="8px"; btn.textContent="🗑️ Delete";
+      btn.onclick=()=>{if(confirm("এই খবরটি ডিলেট করবেন?")){savePosts(getPosts().filter(x=>x.id!==p.id));renderNews(currentCat)}};
+      row.appendChild(btn); box.appendChild(row);
     });
   }
 
-  document.getElementById("adminBtn").onclick = () => {
-    panel.style.display = "block";
-    loginBox.style.display = "block";
-    editorBox.style.display = "none";
-    document.getElementById("adminPin").value = "";
-    document.getElementById("loginMsg").textContent = "";
+  
+  function updateToday(){
+    const d=new Date();
+    const bn=new Intl.DateTimeFormat("bn-BD",{weekday:"long",year:"numeric",month:"long",day:"numeric"}).format(d);
+    const en=new Intl.DateTimeFormat("en-US",{weekday:"long",year:"numeric",month:"long",day:"numeric"}).format(d);
+    const ar=new Intl.DateTimeFormat("ar-SA",{weekday:"long",year:"numeric",month:"long",day:"numeric"}).format(d);
+    const el=document.getElementById("todayDate");
+    if(el) el.textContent=`📅 ${bn} | ${en} | ${ar}`;
+  }
+  updateToday();
+  setInterval(updateToday,60000);
+
+  let searchTerm="";
+  document.getElementById("newsSearch")?.addEventListener("input",e=>{
+    searchTerm=e.target.value.trim().toLowerCase();
+    renderNews(currentCat);
+  });
+
+let currentCat="all";
+  
+  document.addEventListener("click",e=>{
+    const btn=e.target.closest("[data-read-id]");
+    if(!btn)return;
+    const p=getPosts().find(x=>String(x.id)===String(btn.dataset.readId));
+    if(!p)return;
+    const [label,cls]=labels[p.type]||labels.general;
+    document.getElementById("newsModalContent").innerHTML=
+      `${p.image?`<img src="${p.image}" alt="">`:""}
+       <span class="news-label ${cls}">${label}</span>
+       <h2>${esc(p.title)}</h2>
+       <p>${esc(p.text)}</p>
+       <div class="news-meta">${dateText(p.date)}</div>`;
+    document.getElementById("newsModal").style.display="block";
+  });
+  document.getElementById("closeNewsModal")?.addEventListener("click",()=>document.getElementById("newsModal").style.display="none");
+  document.getElementById("newsModal")?.addEventListener("click",e=>{
+    if(e.target.id==="newsModal") e.currentTarget.style.display="none";
+  });
+
+document.querySelectorAll(".news-cat").forEach(btn=>{
+    btn.onclick=()=>{
+      document.querySelectorAll(".news-cat").forEach(x=>x.classList.remove("active"));
+      btn.classList.add("active"); currentCat=btn.dataset.cat; renderNews(currentCat);
+    };
+  });
+
+  document.getElementById("publicAdminLink")?.addEventListener("click",e=>{
+    e.preventDefault(); document.getElementById("adminBtn").click();
+  });
+
+  document.getElementById("footerAdminBtn").onclick=()=>document.getElementById("adminBtn").click();
+
+  document.getElementById("adminBtn").onclick=()=>{
+    panel.style.display="block"; loginBox.style.display="block"; editorBox.style.display="none";
+    document.getElementById("adminPin").value=""; document.getElementById("loginMsg").textContent="";
   };
+  document.getElementById("closeAdmin").onclick=()=>panel.style.display="none";
 
-  document.getElementById("closeAdmin").onclick = () => panel.style.display = "none";
-
-  document.getElementById("loginBtn").onclick = () => {
-    const pin = document.getElementById("adminPin").value;
-    const msg = document.getElementById("loginMsg");
-    if (pin === localStorage.getItem(PIN_KEY)) {
-      loginBox.style.display = "none";
-      editorBox.style.display = "block";
-      renderAdminPosts();
-      msg.textContent = "";
-    } else {
-      msg.textContent = "PIN সঠিক নয়।";
-    }
+  document.getElementById("loginBtn").onclick=()=>{
+    const pin=document.getElementById("adminPin").value;
+    if(pin==="Azadattari2526" || pin===localStorage.getItem(PIN_KEY)){loginBox.style.display="none";editorBox.style.display="block";renderAdminPosts()}
+    else document.getElementById("loginMsg").textContent="PIN সঠিক নয়।";
   };
+  document.getElementById("logoutBtn").onclick=()=>{loginBox.style.display="block";editorBox.style.display="none"};
 
-  document.getElementById("logoutBtn").onclick = () => {
-    loginBox.style.display = "block";
-    editorBox.style.display = "none";
-  };
+  document.querySelectorAll(".az-type").forEach(btn=>btn.onclick=()=>{
+    document.querySelectorAll(".az-type").forEach(x=>x.classList.remove("active"));
+    btn.classList.add("active"); document.getElementById("postType").value=btn.dataset.type;
+  });
 
-  document.getElementById("publishBtn").onclick = async () => {
-    const type = document.getElementById("postType").value;
-    const title = document.getElementById("postTitle").value.trim();
-    const bodyText = document.getElementById("postText").value.trim();
-    const file = document.getElementById("postImage").files[0];
-    const msg = document.getElementById("publishMsg");
-
-    if (!title || !bodyText) {
-      msg.textContent = "শিরোনাম ও পোস্টের লেখা দিন।";
-      return;
-    }
-
-    let image = "";
-    if (file) {
-      image = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.readAsDataURL(file);
-      });
-    }
-
-    const posts = getPosts();
-    posts.push({
-      id: Date.now(),
-      type,
-      title,
-      text: bodyText,
-      image,
-      date: new Date().toISOString()
-    });
+  document.getElementById("publishBtn").onclick=async()=>{
+    const type=document.getElementById("postType").value;
+    const title=document.getElementById("postTitle").value.trim();
+    const text=document.getElementById("postText").value.trim();
+    const file=document.getElementById("postImage").files[0];
+    const msg=document.getElementById("publishMsg");
+    if(!title||!text){msg.textContent="শিরোনাম ও খবরের লেখা দিন।";return}
+    let image="";
+    if(file) image=await new Promise(r=>{const rd=new FileReader();rd.onload=()=>r(rd.result);rd.readAsDataURL(file)});
+    const posts=getPosts();
+    posts.push({id:Date.now(),type,title,text,image,date:new Date().toISOString()});
     savePosts(posts);
-
-    document.getElementById("postTitle").value = "";
-    document.getElementById("postText").value = "";
-    document.getElementById("postImage").value = "";
-    document.getElementById("postType").value = "update";
-    msg.textContent = "✅ পোস্ট প্রকাশিত হয়েছে।";
-    renderPosts();
+    document.getElementById("postTitle").value="";
+    document.getElementById("postText").value="";
+    document.getElementById("postImage").value="";
+    document.getElementById("imageName").textContent="";
+    msg.textContent="✅ খবর প্রকাশিত হয়েছে।";
+    renderNews(currentCat);
   };
 
-  renderPosts();
+  document.getElementById("postImage")?.addEventListener("change",e=>{
+    document.getElementById("imageName").textContent=e.target.files[0]?"📎 "+e.target.files[0].name:"";
+  });
+
+  renderNews();
 })();
 </script>
 
+
+<div style="text-align:center;padding:10px 0 30px">
+  <button type="button" class="footer-admin-btn" id="footerAdminBtn">🔐 Admin Login</button>
+</div>
 </body>
 </html>
