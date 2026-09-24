@@ -170,9 +170,10 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:#73818d;text-align:
     <div class="nav-links">
       <a href="#services">সার্ভিস</a>
       <a href="#why">কেন AZAD TECH</a>
+      <a href="#posts">পোস্ট</a>
       <a href="#contact">যোগাযোগ</a>
     </div>
-    <a class="btn btn-primary" href="#contact">যোগাযোগ</a>
+    <div style="display:flex;gap:8px;align-items:center"><button class="btn btn-dark" id="adminBtn" type="button">🔐 Admin</button><a class="btn btn-primary" href="#contact">যোগাযোগ</a></div>
   </div>
 </nav>
 
@@ -218,6 +219,74 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:#73818d;text-align:
   </div>
 </section>
 
+
+<section id="posts">
+  <div class="container">
+    <div class="section-head">
+      <h2>📱 AZAD TECH আপডেট</h2>
+      <p>Social Media, Tech ও গুরুত্বপূর্ণ নতুন আপডেট—পোস্ট আকারে দেখুন।</p>
+    </div>
+    <div id="postsList" class="azad-feed"></div>
+    <div id="noPosts" class="card azad-empty" style="text-align:center;display:none">
+      এখনো কোনো পোস্ট প্রকাশ করা হয়নি।
+    </div>
+  </div>
+</section>
+
+<div id="adminPanel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:100;overflow:auto;padding:25px 12px">
+  <div class="container" style="max-width:720px">
+    <div class="card" style="background:#0b1823">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+        <h2>🔐 Admin Panel</h2>
+        <button class="btn btn-dark" id="closeAdmin" type="button">✕</button>
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin-top:12px">
+  নোট: এই ফাইলের বর্তমান পোস্ট সিস্টেমটি ব্রাউজারে সংরক্ষণ করে। সবার ফোনে একই পোস্ট দেখাতে পরে একটি অনলাইন database/authentication (যেমন Supabase) সংযোগ করতে হবে।
+</p>
+      <div id="loginBox">
+        <p style="color:var(--muted);margin-bottom:12px">Admin PIN দিয়ে প্রবেশ করুন।</p>
+        <input id="adminPin" type="password" inputmode="numeric" placeholder="Admin PIN"
+          style="width:100%;padding:13px;border-radius:10px;border:1px solid var(--line);background:#07121c;color:#fff;margin-bottom:10px">
+        <button class="btn btn-primary" id="loginBtn" type="button">Login</button>
+        <p id="loginMsg" style="color:#ff9b9b;margin-top:10px"></p>
+      </div>
+
+      <div id="editorBox" style="display:none">
+        <label>পোস্টের ধরন</label>
+        <select id="postType" style="width:100%;padding:13px;border-radius:10px;border:1px solid var(--line);background:#07121c;color:#fff;margin:7px 0 12px">
+          <option value="update">📱 Social Media / Tech Update</option>
+          <option value="news">🔴 গুরুত্বপূর্ণ আপডেট</option>
+        </select>
+
+        <label>পোস্টের শিরোনাম</label>
+        <input id="postTitle" type="text" placeholder="যেমন: Facebook-এর নতুন আপডেট"
+          style="width:100%;padding:13px;border-radius:10px;border:1px solid var(--line);background:#07121c;color:#fff;margin:7px 0 12px">
+
+        <label>পোস্টের লেখা</label>
+        <textarea id="postText" rows="7" placeholder="আপনার আপডেট লিখুন..."
+          style="width:100%;padding:13px;border-radius:10px;border:1px solid var(--line);background:#07121c;color:#fff;margin:7px 0 12px"></textarea>
+
+        <label>ছবি (ঐচ্ছিক)</label>
+        <input id="postImage" type="file" accept="image/*"
+          style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#07121c;color:#fff;margin:7px 0 16px">
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-primary" id="publishBtn" type="button">📢 পোস্ট করুন</button>
+          <button class="btn btn-dark" id="logoutBtn" type="button">Logout</button>
+        </div>
+        <p id="publishMsg" style="color:#8dddb0;margin-top:12px"></p>
+
+        <div style="margin-top:25px">
+          <h3 style="margin-bottom:10px">আপনার পোস্ট</h3>
+          <div id="adminPosts"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+
 <section id="why">
   <div class="container why">
     <div>
@@ -250,5 +319,228 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:#73818d;text-align:
 <footer>
   © 2026 AZAD TECH. All rights reserved.
 </footer>
+
+<style>
+  .azad-feed{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+  .azad-post{
+    background:var(--card);border:1px solid var(--line);border-radius:18px;
+    padding:16px;box-shadow:0 12px 35px rgba(0,0,0,.18);
+    animation:azadIn .55s ease both;
+  }
+  @keyframes azadIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  .azad-post-head{display:flex;align-items:center;gap:11px}
+  .azad-avatar{
+    width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--green),#0d6f3a);font-weight:900;color:#fff
+  }
+  .azad-post-name{font-weight:800}
+  .azad-post-time{font-size:12px;color:var(--muted)}
+  .azad-badge{margin-left:auto;font-size:11px;padding:5px 9px;border-radius:999px;background:#123324;color:#7ff0ad}
+  .azad-badge.news{background:#3a1418;color:#ff9da6}
+  .azad-post-title{font-size:21px;margin:14px 0 7px}
+  .azad-post-text{white-space:pre-wrap;color:#d8e1e8}
+  .azad-post-image{width:100%;max-height:520px;object-fit:cover;border-radius:14px;margin-top:14px;display:block}
+  .azad-post-date{font-size:12px;color:var(--muted);margin-top:13px}
+  .azad-actions{display:flex;gap:8px;border-top:1px solid var(--line);margin-top:14px;padding-top:10px}
+  .azad-action{
+    flex:1;border:0;background:transparent;color:#cbd6df;padding:9px;border-radius:10px;cursor:pointer
+  }
+  .azad-action:hover{background:#10212e}
+  .azad-empty{max-width:760px;margin:0 auto}
+  .admin-post-row{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px;background:#091722}
+  @media(max-width:800px){
+    #posts .grid{grid-template-columns:1fr!important}
+    .azad-post-title{font-size:19px}
+  }
+</style>
+<script>
+(() => {
+  const KEY = "azadtech_posts_v2";
+  const PIN_KEY = "azadtech_admin_pin_v1";
+  const panel = document.getElementById("adminPanel");
+  const loginBox = document.getElementById("loginBox");
+  const editorBox = document.getElementById("editorBox");
+  const postsList = document.getElementById("postsList");
+  const noPosts = document.getElementById("noPosts");
+
+  if (!localStorage.getItem(PIN_KEY)) localStorage.setItem(PIN_KEY, "1234");
+
+  const getPosts = () => {
+    try { return JSON.parse(localStorage.getItem(KEY) || "[]"); }
+    catch { return []; }
+  };
+  const savePosts = (posts) => localStorage.setItem(KEY, JSON.stringify(posts));
+
+  function dateText(iso){
+    const d = new Date(iso);
+    const bn = new Intl.DateTimeFormat("bn-BD",{weekday:"long",year:"numeric",month:"long",day:"numeric"}).format(d);
+    const en = new Intl.DateTimeFormat("en-US",{weekday:"long",year:"numeric",month:"long",day:"numeric"}).format(d);
+    const ar = new Intl.DateTimeFormat("ar-SA",{weekday:"long",year:"numeric",month:"long",day:"numeric"}).format(d);
+    return `🇧🇩 ${bn} • 🇬🇧 ${en} • 🇸🇦 ${ar}`;
+  }
+
+  function renderPosts(){
+    const posts = getPosts().slice().reverse();
+    postsList.innerHTML = "";
+    noPosts.style.display = posts.length ? "none" : "block";
+
+    posts.forEach((p) => {
+      const card = document.createElement("article");
+      card.className = "azad-post";
+
+      const head = document.createElement("div");
+      head.className = "azad-post-head";
+      head.innerHTML = '<div class="azad-avatar">AT</div><div><div class="azad-post-name">AZAD TECH</div><div class="azad-post-time"></div></div>';
+      head.querySelector(".azad-post-time").textContent = dateText(p.date);
+
+      const badge = document.createElement("span");
+      badge.className = "azad-badge" + (p.type === "news" ? " news" : "");
+      badge.textContent = p.type === "news" ? "🔴 গুরুত্বপূর্ণ" : "📱 Update";
+      head.appendChild(badge);
+
+      const title = document.createElement("h3");
+      title.className = "azad-post-title";
+      title.textContent = p.title;
+
+      const body = document.createElement("p");
+      body.className = "azad-post-text";
+      body.textContent = p.text;
+
+      card.append(head, title, body);
+
+      if (p.image) {
+        const img = document.createElement("img");
+        img.className = "azad-post-image";
+        img.src = p.image;
+        img.alt = p.title || "AZAD TECH post image";
+        card.appendChild(img);
+      }
+
+      const d = document.createElement("div");
+      d.className = "azad-post-date";
+      d.textContent = "প্রকাশিত: " + new Date(p.date).toLocaleTimeString("bn-BD",{hour:"numeric",minute:"2-digit"});
+      card.appendChild(d);
+
+      const actions = document.createElement("div");
+      actions.className = "azad-actions";
+      actions.innerHTML = '<button class="azad-action" type="button">❤️ Like</button><button class="azad-action" type="button">💬 Comment</button><button class="azad-action" type="button">↗️ Share</button>';
+      card.appendChild(actions);
+
+      actions.children[0].onclick = () => {
+        actions.children[0].textContent = "❤️ Liked";
+      };
+      actions.children[2].onclick = async () => {
+        try {
+          await navigator.clipboard.writeText(location.href);
+          actions.children[2].textContent = "✅ Link copied";
+        } catch {
+          actions.children[2].textContent = "↗️ Share";
+        }
+      };
+
+      postsList.appendChild(card);
+    });
+    renderAdminPosts();
+  }
+
+  function renderAdminPosts(){
+    const box = document.getElementById("adminPosts");
+    if (!box) return;
+    box.innerHTML = "";
+    getPosts().slice().reverse().forEach((p) => {
+      const row = document.createElement("div");
+      row.className = "admin-post-row";
+      const title = document.createElement("strong");
+      title.textContent = (p.type === "news" ? "🔴 " : "📱 ") + p.title;
+      const small = document.createElement("small");
+      small.textContent = dateText(p.date);
+      row.append(title, document.createElement("br"), small);
+
+      const btn = document.createElement("button");
+      btn.className = "btn btn-dark";
+      btn.style.marginTop = "8px";
+      btn.textContent = "🗑️ Delete";
+      btn.onclick = () => {
+        if (!confirm("এই পোস্টটি ডিলেট করবেন?")) return;
+        savePosts(getPosts().filter(x => x.id !== p.id));
+        renderPosts();
+      };
+      row.appendChild(btn);
+      box.appendChild(row);
+    });
+  }
+
+  document.getElementById("adminBtn").onclick = () => {
+    panel.style.display = "block";
+    loginBox.style.display = "block";
+    editorBox.style.display = "none";
+    document.getElementById("adminPin").value = "";
+    document.getElementById("loginMsg").textContent = "";
+  };
+
+  document.getElementById("closeAdmin").onclick = () => panel.style.display = "none";
+
+  document.getElementById("loginBtn").onclick = () => {
+    const pin = document.getElementById("adminPin").value;
+    const msg = document.getElementById("loginMsg");
+    if (pin === localStorage.getItem(PIN_KEY)) {
+      loginBox.style.display = "none";
+      editorBox.style.display = "block";
+      renderAdminPosts();
+      msg.textContent = "";
+    } else {
+      msg.textContent = "PIN সঠিক নয়।";
+    }
+  };
+
+  document.getElementById("logoutBtn").onclick = () => {
+    loginBox.style.display = "block";
+    editorBox.style.display = "none";
+  };
+
+  document.getElementById("publishBtn").onclick = async () => {
+    const type = document.getElementById("postType").value;
+    const title = document.getElementById("postTitle").value.trim();
+    const bodyText = document.getElementById("postText").value.trim();
+    const file = document.getElementById("postImage").files[0];
+    const msg = document.getElementById("publishMsg");
+
+    if (!title || !bodyText) {
+      msg.textContent = "শিরোনাম ও পোস্টের লেখা দিন।";
+      return;
+    }
+
+    let image = "";
+    if (file) {
+      image = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    const posts = getPosts();
+    posts.push({
+      id: Date.now(),
+      type,
+      title,
+      text: bodyText,
+      image,
+      date: new Date().toISOString()
+    });
+    savePosts(posts);
+
+    document.getElementById("postTitle").value = "";
+    document.getElementById("postText").value = "";
+    document.getElementById("postImage").value = "";
+    document.getElementById("postType").value = "update";
+    msg.textContent = "✅ পোস্ট প্রকাশিত হয়েছে।";
+    renderPosts();
+  };
+
+  renderPosts();
+})();
+</script>
+
 </body>
 </html>
